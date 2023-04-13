@@ -25,7 +25,7 @@ RSpec.describe 'patch subscription from active to cancelled' do
     expect(sub_data[:data][:type]).to eq('subscription')
     expect(sub_data[:data][:attributes]).to be_a Hash
     expect(sub_data[:data][:attributes].keys.sort).to eq(%i[title price active frequency customer_id tea_id
-      created_at updated_at].sort)
+                                                            created_at updated_at].sort)
     expect(sub_data[:data][:attributes][:title]).to eq(subscription.title)
     expect(sub_data[:data][:attributes][:price]).to eq(subscription.price)
     expect(sub_data[:data][:attributes][:active]).to be(false)
@@ -68,7 +68,7 @@ RSpec.describe 'patch subscription from active to cancelled' do
       customer = create(:customer)
       tea = create(:tea)
       sub_id = Subscription.maximum(:id).to_i + 1
-      
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -91,7 +91,7 @@ RSpec.describe 'patch subscription from active to cancelled' do
       customer2 = create(:customer)
       tea = create(:tea)
       sub_id = create(:subscription, customer_id: customer2.id).id
-      
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -106,23 +106,23 @@ RSpec.describe 'patch subscription from active to cancelled' do
       expect(error_message.keys).to eq([:error])
       expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
       expect(error_message[:error][:code]).to eq(400)
-      expect(error_message[:error][:message]).to eq("Invalid request, subscription does not belong to customer_id")
+      expect(error_message[:error][:message]).to eq('Invalid request, subscription does not belong to customer_id')
     end
 
     it 'returns an error if customer id is missing' do
       customer = create(:customer)
       tea = create(:tea)
       subscription = create(:subscription)
-  
+
       expect(Subscription.last.active).to eq(true)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
       }
-  
+
       patch "/api/v1/subscriptions/#{subscription.id}", headers: headers
-      
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to have_http_status(400)
@@ -130,23 +130,23 @@ RSpec.describe 'patch subscription from active to cancelled' do
       expect(error_message.keys).to eq([:error])
       expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
       expect(error_message[:error][:code]).to eq(400)
-      expect(error_message[:error][:message]).to eq("Invalid request, customer_id is a required parameter")
+      expect(error_message[:error][:message]).to eq('Invalid request, customer_id is a required parameter')
     end
 
     it 'returns an error if customer id is invalid' do
       customer_id = create(:customer).id + 1
       tea = create(:tea)
       subscription = create(:subscription)
-  
+
       expect(Subscription.last.active).to eq(true)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
       }
-  
+
       patch "/api/v1/subscriptions/#{subscription.id}", headers: headers, params: { customer_id: customer_id }.to_json
-      
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to have_http_status(400)
@@ -154,7 +154,7 @@ RSpec.describe 'patch subscription from active to cancelled' do
       expect(error_message.keys).to eq([:error])
       expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
       expect(error_message[:error][:code]).to eq(400)
-      expect(error_message[:error][:message]).to eq("Invalid request, customer_id is invalid")
+      expect(error_message[:error][:message]).to eq('Invalid request, customer_id is invalid')
     end
   end
 end

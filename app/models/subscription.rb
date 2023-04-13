@@ -13,7 +13,7 @@ class Subscription < ApplicationRecord
   after_create :set_active
 
   def cancel
-    self.update_attribute(:active, false)
+    update_attribute(:active, false)
   end
 
   private
