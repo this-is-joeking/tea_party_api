@@ -1,6 +1,7 @@
 module Api
   module V1
     class SubscriptionsController < ApplicationController
+      rescue_from ActiveRecord::RecordInvalid, with: :render_error
       before_action :find_customer, only: [:index, :create]
 
       def index
@@ -32,6 +33,10 @@ module Api
         else
           render json: ErrorSerializer.missing_parameter('customer_id'), status: :bad_request
         end
+      end
+
+      def render_error(error)
+        render json: ErrorSerializer.user_error(error.message), status: :bad_request
       end
     end
   end

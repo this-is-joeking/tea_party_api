@@ -16,4 +16,13 @@ class ErrorSerializer
       }
     }
   end
+
+  def self.user_error(error)
+    {
+      "error": {
+        "code": 400,
+        "message": error
+      }
+    }
+  end
 end
