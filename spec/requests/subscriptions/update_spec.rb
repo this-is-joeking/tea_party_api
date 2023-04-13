@@ -107,7 +107,54 @@ RSpec.describe 'patch subscription from active to cancelled' do
       expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
       expect(error_message[:error][:code]).to eq(400)
       expect(error_message[:error][:message]).to eq("Invalid request, subscription does not belong to customer_id")
+    end
 
+    it 'returns an error if customer id is missing' do
+      customer = create(:customer)
+      tea = create(:tea)
+      subscription = create(:subscription)
+  
+      expect(Subscription.last.active).to eq(true)
+  
+      headers = {
+        'CONTENT_TYPE' => 'application/json',
+        'ACCEPT' => 'application/json'
+      }
+  
+      patch "/api/v1/subscriptions/#{subscription.id}", headers: headers
+      
+      error_message = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to have_http_status(400)
+      expect(error_message).to be_a Hash
+      expect(error_message.keys).to eq([:error])
+      expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
+      expect(error_message[:error][:code]).to eq(400)
+      expect(error_message[:error][:message]).to eq("Invalid request, customer_id is a required parameter")
+    end
+
+    it 'returns an error if customer id is invalid' do
+      customer_id = create(:customer).id + 1
+      tea = create(:tea)
+      subscription = create(:subscription)
+  
+      expect(Subscription.last.active).to eq(true)
+  
+      headers = {
+        'CONTENT_TYPE' => 'application/json',
+        'ACCEPT' => 'application/json'
+      }
+  
+      patch "/api/v1/subscriptions/#{subscription.id}", headers: headers, params: { customer_id: customer_id }.to_json
+      
+      error_message = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to have_http_status(400)
+      expect(error_message).to be_a Hash
+      expect(error_message.keys).to eq([:error])
+      expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
+      expect(error_message[:error][:code]).to eq(400)
+      expect(error_message[:error][:message]).to eq("Invalid request, customer_id is invalid")
     end
   end
 end
