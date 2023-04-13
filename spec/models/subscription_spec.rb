@@ -13,4 +13,18 @@ RSpec.describe Subscription do
     it { should validate_presence_of :customer_id }
     it { should validate_presence_of :tea_id }
   end
+
+  describe '#cancel' do
+    it 'updates the subscriptions active from true to false' do
+      create(:customer)
+      create(:tea)
+      subscription = create(:subscription)
+
+      expect(subscription.active).to eq(true)
+
+      subscription.cancel
+
+      expect(subscription.active).to eq(false)
+    end
+  end
 end

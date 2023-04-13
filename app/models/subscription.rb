@@ -12,6 +12,10 @@ class Subscription < ApplicationRecord
   enum frequency: { weekly: 0, biweekly: 1, monthly: 2, quarterly: 3 }
   after_create :set_active
 
+  def cancel
+    update_attribute(:active, false)
+  end
+
   private
 
   def set_active
