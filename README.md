@@ -3,7 +3,7 @@
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 # Tea Party API
 
-This REST API is a partial design of a back end for a tea subscription service. It offers clients the ability to send request to get all subscriptions for a customer, create a new customer subscription, or delete a customer subscription.
+This REST API is a partial design of a back end for a tea subscription service. It offers clients the ability to send request to [get all subscriptions](get-all-subscriptions-for-a-given-customer) for a customer, [create a new customer subscription](create-a-new-subscription-for-a-given-customer), or [deactivate a customer subscription](deactivate-a-customer-subscription).
 
 ## Built with
 ```
@@ -25,77 +25,75 @@ PostgreSQL
   
 ## API Endpoints
 
-- Get all subscriptions for a given customer
-  - __Request__
-    `get '/api/v1/subscriptions?customer_id=1'`
-  - __Response__
-    ```
-    {
-    "data": [
-        {
-            "id": "1",
-            "type": "subscription",
-            "attributes": {
-                "title": "Hibiscus",
-                "price": 6.81,
-                "active": false,
-                "frequency": "quarterly",
-                "customer_id": 1,
-                "tea_id": 9,
-                "created_at": "2023-04-13T00:49:06.976Z",
-                "updated_at": "2023-04-13T00:49:06.976Z"
-            }
-        },
-        {
-            "id": "10",
-            "type": "subscription",
-            "attributes": {
-                "title": "Che Dang",
-                "price": 58.74,
-                "active": true,
-                "frequency": "monthly",
-                "customer_id": 1,
-                "tea_id": 3,
-                "created_at": "2023-04-13T00:49:07.019Z",
-                "updated_at": "2023-04-13T00:49:07.019Z"
-            }
-        },
-        {
-            "id": "19",
-            "type": "subscription",
-            "attributes": {
-                "title": "Shui Xian",
-                "price": 17.71,
-                "active": true,
-                "frequency": "quarterly",
-                "customer_id": 1,
-                "tea_id": 10,
-                "created_at": "2023-04-13T00:49:07.055Z",
-                "updated_at": "2023-04-13T00:49:07.055Z"
-            }
-        },
-        {
-            "id": "24",
-            "type": "subscription",
-            "attributes": {
-                "title": "Dried Lime",
-                "price": 80.59,
-                "active": true,
-                "frequency": "quarterly",
-                "customer_id": 1,
-                "tea_id": 1,
-                "created_at": "2023-04-13T00:49:07.075Z",
-                "updated_at": "2023-04-13T00:49:07.075Z"
-            }
-          }
-        ]
-      }
-    ```
+### Get all subscriptions for a given customer
+  __Request__
+  
+  `get '/api/v1/subscriptions'`
 
-- Create a new subscription for a given customer 
-  - __Request__
-  `post '/api/v1/subscriptions'`
   Body
+
+  ```
+  { "customer_id" = "1" }
+  ```
+    
+  __Response__
+  
+  ```
+  {
+  "data": [
+      {
+          "id": "1",
+          "type": "subscription",
+          "attributes": {
+              "title": "Hibiscus",
+              "price": 6.81,
+              "active": false,
+              "frequency": "quarterly",
+              "customer_id": 1,
+              "tea_id": 9,
+              "created_at": "2023-04-13T00:49:06.976Z",
+              "updated_at": "2023-04-13T00:49:06.976Z"
+          }
+      },
+      {
+          "id": "10",
+          "type": "subscription",
+          "attributes": {
+              "title": "Che Dang",
+              "price": 58.74,
+              "active": true,
+              "frequency": "monthly",
+              "customer_id": 1,
+              "tea_id": 3,
+              "created_at": "2023-04-13T00:49:07.019Z",
+              "updated_at": "2023-04-13T00:49:07.019Z"
+          }
+      },
+      {
+          "id": "19",
+          "type": "subscription",
+          "attributes": {
+              "title": "Shui Xian",
+              "price": 17.71,
+              "active": true,
+              "frequency": "quarterly",
+              "customer_id": 1,
+              "tea_id": 10,
+              "created_at": "2023-04-13T00:49:07.055Z",
+              "updated_at": "2023-04-13T00:49:07.055Z"
+            }
+        }
+      ]
+    }
+  ```
+---
+### Create a new subscription for a given customer 
+  __Request__
+  
+  `post '/api/v1/subscriptions'`
+  
+  Body
+  
   ```
   {
       "title": 'Test Tea Subscription',
@@ -105,12 +103,46 @@ PostgreSQL
       "tea_id": 10
     }
   ```
-  - __Response__
+  
+  __Response__
+  
   ```
   {
     "success": "Subscription added successfully"
   }
   ```
-
+  ---
+### Deactivate a customer subscription
+  __Request__
+  
+  `patch '/api/v1/subscriptions/<subscription_id>'`
+  
+  Body
+  
+  ```
+  { "customer_id" : "1" }
+  ```
+  
+  __Response__
+  
+  ```
+  {
+    "data": {
+        "id": "4",
+        "type": "subscription",
+        "attributes": {
+            "title": "Darjeeling",
+            "price": 20.65,
+            "active": false,
+            "frequency": "quarterly",
+            "customer_id": 1,
+            "tea_id": 6,
+            "created_at": "2023-04-13T19:21:00.526Z",
+            "updated_at": "2023-04-13T21:07:12.001Z"
+            }
+        }
+   }
+  ```
+  
 ## Database Diagram
 ![Database schema](/docs/db_diagram.png)
