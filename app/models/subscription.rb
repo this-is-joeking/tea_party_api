@@ -10,7 +10,7 @@ class Subscription < ApplicationRecord
   validates_numericality_of :frequency
 
   enum frequency: { weekly: 0, biweekly: 1, monthly: 2, quarterly: 3 }
-  after_initialize :set_active
+  after_create :set_active
 
   private
 

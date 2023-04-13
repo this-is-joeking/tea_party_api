@@ -12,5 +12,4 @@ class Customer < ApplicationRecord
                         :country
 
   validates_uniqueness_of :email, case_sensitive: false
-
 end

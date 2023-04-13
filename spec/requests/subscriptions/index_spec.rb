@@ -12,8 +12,8 @@ RSpec.describe 'get a customers subscriptions' do
     }
     get '/api/v1/subscriptions', headers: headers, params: { customer_id: customer.id }
 
-    subscriptions_data = JSON.parse(response.body, symbolize_names: true)  
-  
+    subscriptions_data = JSON.parse(response.body, symbolize_names: true)
+
     expect(response).to be_successful
     expect(response).to have_http_status(200)
     expect(subscriptions_data).to be_a Hash
@@ -22,12 +22,13 @@ RSpec.describe 'get a customers subscriptions' do
     expect(subscriptions_data[:data].length).to eq(10)
     subscriptions_data[:data].each do |sub_data|
       expect(sub_data).to be_a Hash
-      expect(sub_data.keys.sort).to eq([:id, :type, :attributes].sort)
+      expect(sub_data.keys.sort).to eq(%i[id type attributes].sort)
       expect(sub_data[:id]).to be_a String
       expect(Subscription.exists?(sub_data[:id]))
       expect(sub_data[:type]).to eq('subscription')
       expect(sub_data[:attributes]).to be_a Hash
-      expect(sub_data[:attributes].keys.sort).to eq([:title, :price, :active, :frequency, :customer_id, :tea_id, :created_at, :updated_at].sort)
+      expect(sub_data[:attributes].keys.sort).to eq(%i[title price active frequency customer_id tea_id
+                                                       created_at updated_at].sort)
       expect(sub_data[:attributes][:title]).to be_a String
       expect(sub_data[:attributes][:price]).to be_a Float
       expect(sub_data[:attributes][:active]).to eq(true)
@@ -39,7 +40,7 @@ RSpec.describe 'get a customers subscriptions' do
       expect(sub_data[:attributes][:updated_at].to_datetime).to be_a DateTime
     end
   end
-  
+
   it 'returns both cancelled and active subscriptions' do
     customer = create(:customer)
     create_list(:tea, 10)
@@ -54,8 +55,8 @@ RSpec.describe 'get a customers subscriptions' do
     }
     get '/api/v1/subscriptions', headers: headers, params: { customer_id: customer.id }
 
-    subscriptions_data = JSON.parse(response.body, symbolize_names: true)  
-  
+    subscriptions_data = JSON.parse(response.body, symbolize_names: true)
+
     expect(response).to be_successful
     expect(response).to have_http_status(200)
     expect(subscriptions_data).to be_a Hash
@@ -64,12 +65,13 @@ RSpec.describe 'get a customers subscriptions' do
     expect(subscriptions_data[:data].length).to eq(10)
     subscriptions_data[:data].each do |sub_data|
       expect(sub_data).to be_a Hash
-      expect(sub_data.keys.sort).to eq([:id, :type, :attributes].sort)
+      expect(sub_data.keys.sort).to eq(%i[id type attributes].sort)
       expect(sub_data[:id]).to be_a String
       expect(Subscription.exists?(sub_data[:id]))
       expect(sub_data[:type]).to eq('subscription')
       expect(sub_data[:attributes]).to be_a Hash
-      expect(sub_data[:attributes].keys.sort).to eq([:title, :price, :active, :frequency, :customer_id, :tea_id, :created_at, :updated_at].sort)
+      expect(sub_data[:attributes].keys.sort).to eq(%i[title price active frequency customer_id tea_id
+                                                       created_at updated_at].sort)
       expect(sub_data[:attributes][:title]).to be_a String
       expect(sub_data[:attributes][:price]).to be_a Float
       expect(sub_data[:attributes][:active]).to be_in([true, false])
@@ -91,8 +93,8 @@ RSpec.describe 'get a customers subscriptions' do
     }
     get '/api/v1/subscriptions', headers: headers, params: { customer_id: customer.id }
 
-    subscriptions_data = JSON.parse(response.body, symbolize_names: true)  
-  
+    subscriptions_data = JSON.parse(response.body, symbolize_names: true)
+
     expect(response).to be_successful
     expect(response).to have_http_status(200)
     expect(subscriptions_data).to be_a Hash
@@ -102,19 +104,19 @@ RSpec.describe 'get a customers subscriptions' do
 
   describe 'sad paths' do
     it 'returns an error if customer id parameter is not sent' do
-      customer = create(:customer)
+      create(:customer)
       create_list(:tea, 10)
       create_list(:subscription, 5)
       5.times do
         create(:subscription, active: false)
       end
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
       }
       get '/api/v1/subscriptions', headers: headers
-  
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to_not be_successful
