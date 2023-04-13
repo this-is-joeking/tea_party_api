@@ -18,6 +18,9 @@ require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/rails_helper.rb'
 end
+require 'simplecov-cobertura'
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
