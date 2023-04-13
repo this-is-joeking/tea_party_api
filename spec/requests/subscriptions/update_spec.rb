@@ -36,4 +36,30 @@ RSpec.describe 'patch subscription from active to cancelled' do
     expect(sub_data[:data][:attributes][:updated_at].to_datetime.beginning_of_minute).to eq(subscription.updated_at.beginning_of_minute)
     expect(Subscription.last.active).to eq(false)
   end
+
+  describe 'edge cases' do
+    it 'returns a helpful error message if you try to cancel a subscription that is already cancelled' do
+      customer = create(:customer)
+      tea = create(:tea)
+      subscription = create(:subscription)
+      subscription.cancel
+      expect(Subscription.last.active).to eq(false)
+
+      headers = {
+        'CONTENT_TYPE' => 'application/json',
+        'ACCEPT' => 'application/json'
+      }
+
+      patch "/api/v1/subscriptions/#{subscription.id}", headers: headers, params: { customer_id: customer.id }.to_json
+
+      error_message = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to have_http_status(400)
+      expect(error_message).to be_a Hash
+      expect(error_message.keys).to eq([:error])
+      expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
+      expect(error_message[:error][:code]).to eq(400)
+      expect(error_message[:error][:message]).to eq('Invalid request, subscription is already cancelled')
+    end
+  end
 end
