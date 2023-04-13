@@ -2,7 +2,7 @@ module Api
   module V1
     class SubscriptionsController < ApplicationController
       rescue_from ActiveRecord::RecordInvalid, with: :render_error
-      before_action :find_customer, only: %i[index create]
+      before_action :find_customer, only: %i[index create update]
 
       def index
         render json: SubscriptionSerializer.new(@customer.subscriptions), status: :ok
@@ -11,6 +11,12 @@ module Api
       def create
         @customer.subscriptions.create!(subscription_params)
         render json: { success: 'Subscription added successfully' }, status: :created
+      end
+
+      def update
+        subscription = Subscription.find(params[:id])
+        subscription.cancel
+        render json: SubscriptionSerializer.new(subscription), status: 200
       end
 
       private
