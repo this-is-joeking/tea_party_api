@@ -1,9 +1,10 @@
 module Api
   module V1
     class SubscriptionsController < ApplicationController
-      rescue_from ActiveRecord::RecordInvalid, with: :render_error
-      rescue_from Exceptions::InvalidRequest, with: :render_error
-      rescue_from ActiveRecord::RecordNotFound, with: :render_error
+      rescue_from ActiveRecord::RecordInvalid,
+                  Exceptions::InvalidRequest,
+                  ActiveRecord::RecordNotFound,
+                  with: :render_error
       before_action :find_customer, only: %i[index create update]
       before_action :check_subscription_status, only: :update
 
