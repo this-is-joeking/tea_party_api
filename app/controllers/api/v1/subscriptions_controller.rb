@@ -16,7 +16,9 @@ module Api
       private
 
       def subscription_params
-        params[:frequency] = params[:frequency].to_i 
+        if params[:frequency]
+          params[:frequency] = params[:frequency].to_i 
+        end
         params.permit(:title, :price, :frequency, :customer_id, :tea_id, :active)
       end
 
