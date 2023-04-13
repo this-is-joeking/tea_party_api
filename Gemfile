@@ -41,6 +41,7 @@ group :test do
   gem 'rspec-rails'
   gem 'capybara'
   gem 'simplecov', require: false
+  gem 'simplecov-cobertura', require: false
   gem 'shoulda-matchers', '~> 5.0'
 end
 
