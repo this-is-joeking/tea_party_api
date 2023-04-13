@@ -3,7 +3,7 @@
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 # Tea Party API
 
-This REST API is a partial design of a back end for a tea subscription service. It offers clients the ability to send request to [get all subscriptions](get-all-subscriptions-for-a-given-customer) for a customer, [create a new customer subscription](create-a-new-subscription-for-a-given-customer), or [deactivate a customer subscription](deactivate-a-customer-subscription).
+This REST API is a partial design of a back end for a tea subscription service. It offers clients the ability to send request to [get all subscriptions](#get-all-subscriptions-for-a-given-customer) for a customer, [create a new customer subscription](#create-a-new-subscription-for-a-given-customer), or [deactivate a customer subscription](#deactivate-a-customer-subscription).
 
 ## Built with
 ```
