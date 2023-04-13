@@ -5,6 +5,6 @@ class Tea < ApplicationRecord
   validates_presence_of :title,
                         :description,
                         :brewtime
-  
+
   validates_numericality_of :brewtime
 end

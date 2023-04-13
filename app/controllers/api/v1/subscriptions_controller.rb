@@ -2,7 +2,7 @@ module Api
   module V1
     class SubscriptionsController < ApplicationController
       rescue_from ActiveRecord::RecordInvalid, with: :render_error
-      before_action :find_customer, only: [:index, :create]
+      before_action :find_customer, only: %i[index create]
 
       def index
         render json: SubscriptionSerializer.new(@customer.subscriptions), status: :ok
@@ -16,9 +16,7 @@ module Api
       private
 
       def subscription_params
-        if params[:frequency]
-          params[:frequency] = params[:frequency].to_i 
-        end
+        params[:frequency] = params[:frequency].to_i if params[:frequency]
         params.permit(:title, :price, :frequency, :customer_id, :tea_id, :active)
       end
 
@@ -32,7 +30,7 @@ module Api
         return if @customer
 
         if params[:customer_id]
-          render json: ErrorSerializer.invalid_id("customer"), status: :bad_request
+          render json: ErrorSerializer.invalid_id('customer'), status: :bad_request
         else
           render json: ErrorSerializer.missing_parameter('customer_id'), status: :bad_request
         end

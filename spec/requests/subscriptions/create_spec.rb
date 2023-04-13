@@ -26,7 +26,7 @@ RSpec.describe 'post a new subscription for given customer' do
     expect(cust.teas).to eq([tea])
 
     sub = cust.subscriptions.last
-    
+
     expect(sub.title).to eq('Test Tea Subscription')
     expect(sub.price).to eq(5.99)
     expect(sub.frequency).to eq('biweekly')
@@ -63,7 +63,7 @@ RSpec.describe 'post a new subscription for given customer' do
 
     it 'returns an error message if passed an invalid tea id' do
       cust = create(:customer)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -76,7 +76,7 @@ RSpec.describe 'post a new subscription for given customer' do
         tea_id: 1
       }
       post '/api/v1/subscriptions', headers: headers, params: body.to_json
-      
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to_not be_successful
@@ -90,7 +90,7 @@ RSpec.describe 'post a new subscription for given customer' do
 
     it 'returns an error message if customer id is not passed' do
       tea = create(:tea)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -102,7 +102,7 @@ RSpec.describe 'post a new subscription for given customer' do
         tea_id: tea.id
       }
       post '/api/v1/subscriptions', headers: headers, params: body.to_json
-      
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to_not be_successful
@@ -116,7 +116,7 @@ RSpec.describe 'post a new subscription for given customer' do
 
     it 'returns an error message tea id is not passed' do
       cust = create(:customer)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -128,7 +128,7 @@ RSpec.describe 'post a new subscription for given customer' do
         customer_id: cust.id
       }
       post '/api/v1/subscriptions', headers: headers, params: body.to_json
-      
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to_not be_successful
@@ -143,7 +143,7 @@ RSpec.describe 'post a new subscription for given customer' do
     it 'returns a validation error if missing other required params' do
       cust = create(:customer)
       tea = create(:tea)
-  
+
       headers = {
         'CONTENT_TYPE' => 'application/json',
         'ACCEPT' => 'application/json'
@@ -153,7 +153,7 @@ RSpec.describe 'post a new subscription for given customer' do
         tea_id: tea.id
       }
       post '/api/v1/subscriptions', headers: headers, params: body.to_json
-  
+
       error_message = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to_not be_successful
