@@ -16,12 +16,13 @@ module Api
       private
 
       def subscription_params
-        params[:active] = true
-        params.require(:subscription).permit(:title, :price, :frequency, :customer_id, :tea_id, :active)
+        params[:frequency] = params[:frequency].to_i 
+        params.permit(:title, :price, :frequency, :customer_id, :tea_id, :active)
       end
 
       def find_customer
-        @customer = Customer.find_by(id: params[:customer_id])
+        id = params[:customer_id]
+        @customer = Customer.find_by(id: id)
         validate_customer
       end
 
