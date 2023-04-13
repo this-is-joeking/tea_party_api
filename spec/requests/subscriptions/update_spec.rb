@@ -62,4 +62,52 @@ RSpec.describe 'patch subscription from active to cancelled' do
       expect(error_message[:error][:message]).to eq('Invalid request, subscription is already cancelled')
     end
   end
+
+  describe 'sad paths' do
+    it 'returns an error message if subscription id passed is invalid' do
+      customer = create(:customer)
+      tea = create(:tea)
+      sub_id = Subscription.maximum(:id).to_i + 1
+      
+      headers = {
+        'CONTENT_TYPE' => 'application/json',
+        'ACCEPT' => 'application/json'
+      }
+
+      patch "/api/v1/subscriptions/#{sub_id}", headers: headers, params: { customer_id: customer.id }.to_json
+
+      error_message = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to have_http_status(400)
+      expect(error_message).to be_a Hash
+      expect(error_message.keys).to eq([:error])
+      expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
+      expect(error_message[:error][:code]).to eq(400)
+      expect(error_message[:error][:message]).to eq("Couldn't find Subscription with 'id'=#{sub_id}")
+    end
+
+    it 'returns an error message if customer does not own the subscription' do
+      customer1 = create(:customer)
+      customer2 = create(:customer)
+      tea = create(:tea)
+      sub_id = create(:subscription, customer_id: customer2.id).id
+      
+      headers = {
+        'CONTENT_TYPE' => 'application/json',
+        'ACCEPT' => 'application/json'
+      }
+
+      patch "/api/v1/subscriptions/#{sub_id}", headers: headers, params: { customer_id: customer1.id }.to_json
+
+      error_message = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to have_http_status(400)
+      expect(error_message).to be_a Hash
+      expect(error_message.keys).to eq([:error])
+      expect(error_message[:error].keys.sort).to eq(%i[code message].sort)
+      expect(error_message[:error][:code]).to eq(400)
+      expect(error_message[:error][:message]).to eq("Invalid request, subscription does not belong to customer_id")
+
+    end
+  end
 end

@@ -3,6 +3,7 @@ module Api
     class SubscriptionsController < ApplicationController
       rescue_from ActiveRecord::RecordInvalid, with: :render_error
       rescue_from Exceptions::InvalidRequest, with: :render_error
+      rescue_from ActiveRecord::RecordNotFound, with: :render_error
       before_action :find_customer, only: %i[index create update]
       before_action :check_subscription_status, only: :update
 
@@ -51,6 +52,8 @@ module Api
         @subscription = Subscription.find(params[:id])
         if @subscription.active == false
           raise Exceptions::InvalidRequest, 'Invalid request, subscription is already cancelled'
+        elsif !@customer.subscriptions.include?(@subscription)
+          raise Exceptions::InvalidRequest, 'Invalid request, subscription does not belong to customer_id'
         end
       end
     end
