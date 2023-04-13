@@ -14,7 +14,6 @@ class Subscription < ApplicationRecord
 
   def cancel
     self.update_attribute(:active, false)
-    self
   end
 
   private
